@@ -1,33 +1,33 @@
-const clr = require('../dist/clr.umd.js');
-const styles = clr.styles;
+const cli = require('../dist/cli.umd.js');
+const styles = cli.styles;
 
-clr.startSection('Log Print');
-clr.info('Hello World!', true);
-clr.warn('Hello World!', true);
-clr.error('Hello World!', true);
-clr.success('Hello World!', true);
-clr.endSection();
+cli.startSection('Log Print');
+cli.info('Hello World!', true);
+cli.warn('Hello World!', true);
+cli.error('Hello World!', true);
+cli.success('Hello World!', true);
+cli.endSection();
 
-clr.startSection('IO');
-clr.log('Begin to write README.md...');
-clr.replaceFileContent('../README.md', 'clr', 'clr');
-clr.endSection();
+cli.startSection('IO');
+cli.log('Begin to write README.md...');
+cli.replaceFileContent('../README.md', 'cli', 'cli');
+cli.endSection();
 
-clr.startSection('Package File');
-clr.log(clr.getPackage('../package.json'));
-clr.endSection();
+cli.startSection('Package File');
+cli.log(cli.getPackage('../package.json'));
+cli.endSection();
 
-clr.startSection('Questions');
-clr
+cli.startSection('Questions');
+cli
   .questions(['Please input your name:', 'Please input your age:', 'Please your home page:', 'Home page is online?', ['Your country:', ['China', 'US']]])
   .then((res: any) => {
-    clr.success('Your answers as JSON:', true);
-    clr.success(res);
-    clr.log(`
+    cli.success('Your answers as JSON:', true);
+    cli.success(res);
+    cli.log(`
     My name is ${styles.info(styles.bold(res[0]))}, and I am ${styles.bold(res[1])}.
-    My home page is at ${clr.styles.link(res[2])} and it's ${res[3] ? 'online' : 'offline'}. I come from ${styles.bold(res[4])}.
+    My home page is at ${cli.styles.link(res[2])} and it's ${res[3] ? 'online' : 'offline'}. I come from ${styles.bold(res[4])}.
   `);
   })
   .finally(() => {
-    clr.endSection();
+    cli.endSection();
   });

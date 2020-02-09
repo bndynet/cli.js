@@ -1,35 +1,35 @@
-# clr.js
+# cli.js
 
 Powerful Command Line Interface
 
 ## Getting Started
 
-`$ npm i @bndynet/clr -D` to install the package.
+`$ npm i @bndynet/cli -D` to install the package.
 
 `$ npm i chalk inquirer shelljs  -D` to install dependencies.
 
 ```javascript
-const clr = require('@bndynet/clr');
-const styles = clr.styles;
+const cli = require('@bndynet/cli');
+const styles = cli.styles;
 
-clr.startSection('Log Print');
-clr.info('Hello World!', true);
-clr.warn('Hello World!', true);
-clr.error('Hello World!', true);
-clr.success('Hello World!', true);
-clr.endSection();
+cli.startSection('Log Print');
+cli.info('Hello World!', true);
+cli.warn('Hello World!', true);
+cli.error('Hello World!', true);
+cli.success('Hello World!', true);
+cli.endSection();
 
-clr.startSection('IO');
-clr.log('Begin to write README.md...');
-clr.replaceFileContent('../README.md', 'clr', 'clr');
-clr.endSection();
+cli.startSection('IO');
+cli.log('Begin to write README.md...');
+cli.replaceFileContent('../README.md', 'cli', 'cli');
+cli.endSection();
 
-clr.startSection('Package File');
-clr.log(clr.getPackage('../package.json'));
-clr.endSection();
+cli.startSection('Package File');
+cli.log(cli.getPackage('../package.json'));
+cli.endSection();
 
-clr.startSection('Questions');
-clr
+cli.startSection('Questions');
+cli
   .questions([
     'Please input your name:',
     'Please input your age:',
@@ -37,22 +37,22 @@ clr
     'Is home page online?',
     ['Your country:', ['China', 'US']]])
   .then(function(res) {
-    clr.log(`
+    cli.log(`
     My name is ${styles.info(styles.bold(res[0]))}, and I am ${styles.bold(res[1])}.
-    My home page is at ${clr.styles.link(res[2])} and it's ${res[3] ? 'online' : 'offline'}. I come from ${styles.bold(res[4])}.
+    My home page is at ${cli.styles.link(res[2])} and it's ${res[3] ? 'online' : 'offline'}. I come from ${styles.bold(res[4])}.
   `);
   })
   .finally(function() {
-    clr.endSection();
+    cli.endSection();
   });
 ```
 
 
 ## Screenshots
 
-![](https://raw.githubusercontent.com/bndynet/clr.js/master/screenshots/log.png)
+![](https://raw.githubusercontent.com/bndynet/cli.js/master/screenshots/log.png)
 
-![](https://raw.githubusercontent.com/bndynet/clr.js/master/screenshots/questions.png)
+![](https://raw.githubusercontent.com/bndynet/cli.js/master/screenshots/questions.png)
 
 
 ## Development
