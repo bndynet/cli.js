@@ -18,7 +18,7 @@
     "start": "concurrently --kill-others \"npm run watch\"",
     "site-serv": "npm run docs && npm run test && lite-server",
     "test:watch": "jest --coverage --watch",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "test:prod": "npm run lint",
     "predeploy-gh-pages": "ts-node tools/gh-pages-prepare",
     "deploy-gh-pages": "npm run predeploy-gh-pages && ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
