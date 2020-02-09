@@ -6,8 +6,6 @@ Powerful Command Line Interface
 
 `$ npm i @bndynet/cli -D` to install the package.
 
-`$ npm i chalk inquirer shelljs  -D` to install dependencies.
-
 ```javascript
 const cli = require('@bndynet/cli');
 const styles = cli.styles;
