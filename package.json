@@ -1,6 +1,6 @@
 {
   "name": "@bndynet/clr",
-  "version": "0.0.0-dev",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/clr.umd.js",
   "module": "dist/clr.es5.js",
