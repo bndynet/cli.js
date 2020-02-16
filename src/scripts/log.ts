@@ -9,29 +9,39 @@ export function print(text: any): void {
   out(text);
 }
 
-export function log(text: any, hasFlag?: boolean): void {
-  const flag = styles.default(hasFlag ? icons.arrowRight + ' ' : '');
-  out(flag + styles.default(text));
+export function log(text: any): void {
+  if (!text) {
+    return;
+  }
+  out(styles.default(icons.arrowRight + ' ' + text));
 }
 
-export function info(text: any, hasFlag?: boolean): void {
-  const flag = styles.info(hasFlag ? icons.info + ' ' : '');
-  out(flag + styles.info(text));
+export function info(text: any): void {
+  if (!text) {
+    return;
+  }
+  out(styles.info(icons.info + ' ' + text));
 }
 
-export function warn(text: any, hasFlag?: boolean): void {
-  const flag = styles.warn(hasFlag ? icons.warn + ' ' : '');
-  out(flag + styles.warn(text));
+export function warn(text: any): void {
+  if (!text) {
+    return;
+  }
+  out(styles.warn(icons.warn + ' ' + text));
 }
 
-export function success(text: any, hasFlag?: boolean): void {
-  const flag = styles.success(hasFlag ? icons.ok + ' ' : '');
-  out(flag + styles.success(text));
+export function success(text: any): void {
+  if (!text) {
+    return;
+  }
+  out(styles.success(icons.ok + ' ' + text));
 }
 
-export function error(text: any, hasFlag?: boolean): void {
-  const flag = styles.error(hasFlag ? icons.error + ' ' : '');
-  out(flag + styles.error(text));
+export function error(text: any): void {
+  if (!text) {
+    return;
+  }
+  out(styles.error(icons.error + ' ' + text));
 }
 
 export function startSection(title: any): void {
@@ -40,6 +50,8 @@ export function startSection(title: any): void {
     .toUpperCase()
     .padStart(fills + title.length, '=')
     .padEnd(fills * 2 + title.length, '=');
+  out('');
+  out('');
   out(styles.bold(titleLine));
 }
 
@@ -51,5 +63,6 @@ export function endSection(): void {
     .padStart(fills + text.length, '=')
     .padEnd(fills * 2 + text.length, '=');
   out(titleLine);
+  out('');
   out('');
 }
