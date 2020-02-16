@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/bndynet/cli.js/compare/v1.1.0...v1.2.0) (2020-02-16)
+
+
+### Features
+
+* add new icon for loading ([b29c3e2](https://github.com/bndynet/cli.js/commit/b29c3e29d14a689891ee6737fd57ac834daf799f))
+
 # [1.1.0](https://github.com/bndynet/cli.js/compare/v1.0.0...v1.1.0) (2020-02-12)
 
 
