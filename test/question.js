@@ -7,7 +7,7 @@ const cli = require('../dist/cli.umd.js');
 function showQuestions() {
   cli.startSection('Questions');
   cli
-    .questions(['Please input your name:', 'Please input your age:', 'Please your home page:', 'Home page is online?', ['Your country:', ['China', 'US']]])
+    .questions(['Please input your name:', 'Please input your age:', 'Please your home page:', 'Home page is online?', ['Your country:', ['China', '', 'US']]])
     .then((res) => {
       cli.success('Your answers as JSON:', true);
       cli.success(res);
