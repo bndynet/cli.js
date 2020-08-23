@@ -42,7 +42,7 @@ function getConfirmationQuestionObject(question: string): Question {
 
 function getChoicesQuestion(question: string, options: string[]): Question {
   return getQuestionObject(question, AnswerType.RawList, {
-    choices: options,
+    choices: options.map(option => (option === '' ? new inquirer.Separator() : option)),
   });
 }
 
@@ -87,4 +87,8 @@ export function questions(questions: any[]): Promise<any[]> {
     });
     return result;
   });
+}
+
+export function ask(askQuestions: any[]): Promise<any[]> {
+  return questions(askQuestions);
 }
