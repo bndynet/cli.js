@@ -1,6 +1,6 @@
 {
   "name": "@bndynet/cli",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Powerful command line interface for interactive...",
   "main": "dist/cli.umd.js",
   "module": "dist/cli.es5.js",

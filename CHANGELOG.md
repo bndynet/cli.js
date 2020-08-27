@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/bndynet/cli.js/compare/v1.2.0...v1.3.0) (2020-08-27)
+
+
+### Features
+
+* support separator for choices via empty string ([ad1eaf4](https://github.com/bndynet/cli.js/commit/ad1eaf4bbd57189fb07258c03b6df6daab149a58))
+
 # [1.2.0](https://github.com/bndynet/cli.js/compare/v1.1.0...v1.2.0) (2020-02-16)
 
 
