@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/bndynet/cli.js/compare/v1.3.0...v1.4.0) (2021-08-05)
+
+
+### Features
+
+* add suggest method ([42481fa](https://github.com/bndynet/cli.js/commit/42481fa0250bfd03809cd4761c0703b59a7a4479))
+
 # [1.3.0](https://github.com/bndynet/cli.js/compare/v1.2.0...v1.3.0) (2020-08-27)
 
 
