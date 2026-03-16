@@ -20,8 +20,8 @@ const objectArra = [
 
 function suggest() {
   cli
-    .suggest('Your email', objectArra, item => item.email)
-    .then(a => {
+    .suggest('Your email', objectArra, (item) => item.email)
+    .then((a) => {
       cli.log(a);
     });
 }
@@ -38,7 +38,7 @@ function showQuestions() {
       ['Choose or type user name::', arra], // suggest
       ['Choose or type a user::', objectArra], // suggest
     ])
-    .then(res => {
+    .then((res) => {
       cli.success('Your answers as JSON:', true);
       cli.success(res);
       cli.log(`

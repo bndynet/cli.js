@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const chalk = require('chalk');
+import chalk from 'chalk';
 
-function styleText(text: any, styleFunction?: Function): string {
+function styleText(text: any, styleFunction?: (input: string) => string): string {
   if (typeof text !== 'string') {
     text = JSON.stringify(text, null, 2);
   }

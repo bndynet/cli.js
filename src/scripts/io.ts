@@ -1,23 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { print, log, error, success, warn } from './log';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import ora from 'ora';
+import sh from 'shelljs';
+
+import { print, error, success, warn } from './log';
 import { styles } from './styles';
-import { progress } from './progress';
 import { timer } from './timer';
-import { doesNotReject } from 'assert';
 
-const fs = require('fs');
-const ora = require('ora');
-const path = require('path');
-const sh = require('shelljs');
+export type ErrorCallback = (err: NodeJS.ErrnoException | null) => void;
 
-function fdIsOK(fd: number, err: string, successCallback?: () => void, errorCallback?: () => void): void {
+function fdIsOK(fd: number, err: NodeJS.ErrnoException | null, successCallback?: () => void, errorCallback?: ErrorCallback): void {
   if (err) {
     fs.close(fd);
     error(err);
-    errorCallback && errorCallback();
+    if (errorCallback) {
+      errorCallback(err);
+    }
   } else {
-    successCallback && successCallback();
+    if (successCallback) {
+      successCallback();
+    }
   }
 }
 
@@ -42,11 +46,21 @@ export function beginRun(command: string, callback?: (exitCode: number) => void)
       symbol: '$',
     });
     print('');
-    stderr && (isOK ? warn(stderr) : error(stderr));
+    if (stderr) {
+      if (isOK) {
+        warn(stderr);
+      } else {
+        error(stderr);
+      }
+    }
     print(stdout);
     print('');
     const doneString = `done in ${duration.getValue() / 1000}s at ${new Date().toLocaleString()}.`;
-    isOK ? success(doneString) : error(doneString);
+    if (isOK) {
+      success(doneString);
+    } else {
+      error(doneString);
+    }
     print('');
     if (callback && typeof callback === 'function') {
       callback(code);
@@ -54,32 +68,36 @@ export function beginRun(command: string, callback?: (exitCode: number) => void)
   });
 }
 
-export function readFile(filepath: string, encoding?: string): string {
+export function readFile(filepath: string, encoding?: BufferEncoding): string {
   return fs.readFileSync(filepath, encoding || 'utf8');
 }
 
 export function beginReadFile(filepath: string, readCallback?: (buffer: Buffer, readSize: number, size: number) => void): void {
-  fs.open(filepath, 'r', (err: string, fd: number) => {
+  fs.open(filepath, 'r', (err: NodeJS.ErrnoException | null, fd: number) => {
     fdIsOK(fd, err, () => {
-      fs.fstat(fd, (errr: string, stat: any) => {
+      fs.fstat(fd, (errr: NodeJS.ErrnoException | null, stat) => {
         fdIsOK(fd, errr, () => {
           const size = stat.size;
           const buffer = Buffer.alloc(1024);
           let count = 0;
           let totalBuf: any;
           (function next(): void {
-            fs.read(fd, buffer, 0, buffer.length, count, (err: string, bytesRead: number) => {
+            fs.read(fd, buffer, 0, buffer.length, count, (_err, bytesRead: number) => {
               if (bytesRead > 0) {
                 const b = buffer.slice(0, bytesRead);
                 totalBuf = totalBuf ? Buffer.concat([totalBuf, b]) : Buffer.concat([b]);
                 count += bytesRead;
-                readCallback && readCallback(totalBuf, count, size);
+                if (readCallback) {
+                  readCallback(totalBuf, count, size);
+                }
                 setTimeout(() => {
                   next();
                 }, 1000);
               } else {
-                fs.close(fd, (err: any) => {
-                  error(err);
+                fs.close(fd, (closeError) => {
+                  if (closeError) {
+                    error(closeError);
+                  }
                 });
               }
             });
@@ -90,15 +108,19 @@ export function beginReadFile(filepath: string, readCallback?: (buffer: Buffer, 
   });
 }
 
-export function writeFile(filepath: string, fileContent: string, callback?: (err: string) => void): void {
+export function writeFile(filepath: string, fileContent: string, callback?: ErrorCallback): void {
   filepath = path.resolve(__dirname, filepath);
-  fs.writeFile(filepath, fileContent, callback);
+  if (callback) {
+    fs.writeFile(filepath, fileContent, callback);
+    return;
+  }
+  fs.writeFile(filepath, fileContent, () => undefined);
 }
 
-export function replaceFileContent(filepath: string, source: string, replacement: string, callback?: (err: string) => void): void {
+export function replaceFileContent(filepath: string, source: string, replacement: string, callback?: ErrorCallback): void {
   filepath = path.resolve(__dirname, filepath);
   const reg = new RegExp(`${source}`, 'g');
   let fileContent = readFile(filepath);
   fileContent = fileContent.replace(reg, replacement);
-  writeFile(filepath, fileContent);
+  writeFile(filepath, fileContent, callback);
 }

@@ -5,6 +5,14 @@ import { styles } from './styles';
 const out = console.log;
 const lineLength = 80;
 
+function stringifyText(text: any): string {
+  return typeof text === 'string' ? text : styles.default(text);
+}
+
+function printWithPrefix(text: any, prefix: string, formatter: (value: string | object) => string): void {
+  out(formatter(`${prefix} ${stringifyText(text)}`));
+}
+
 export function print(text: any): void {
   out(text);
 }
@@ -13,35 +21,35 @@ export function log(text: any): void {
   if (!text) {
     return;
   }
-  out(styles.default(icons.arrowRight + ' ' + text));
+  printWithPrefix(text, icons.arrowRight, styles.default);
 }
 
 export function info(text: any): void {
   if (!text) {
     return;
   }
-  out(styles.info(icons.info + ' ' + text));
+  printWithPrefix(text, icons.info, styles.info);
 }
 
 export function warn(text: any): void {
   if (!text) {
     return;
   }
-  out(styles.warn(icons.warn + ' ' + text));
+  printWithPrefix(text, icons.warn, styles.warn);
 }
 
 export function success(text: any): void {
   if (!text) {
     return;
   }
-  out(styles.success(icons.ok + ' ' + text));
+  printWithPrefix(text, icons.ok, styles.success);
 }
 
 export function error(text: any): void {
   if (!text) {
     return;
   }
-  out(styles.error(icons.error + ' ' + text));
+  printWithPrefix(text, icons.error, styles.error);
 }
 
 export function startSection(title: any): void {

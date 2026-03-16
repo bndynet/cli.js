@@ -1,8 +1,5 @@
-import { log } from './log';
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const lib = require('cli-progress');
+import cliProgress from 'cli-progress';
 
 export class Progress {
   private total: number;
@@ -17,7 +14,7 @@ export class Progress {
   }
 
   public show(): Progress {
-    this.instance = new lib.SingleBar({
+    this.instance = new cliProgress.SingleBar({
       // format: `[{bar}] {percentage}%`,
       // format: '[{bar}] {percentage}% | ETA: {eta}s | Duration: {duration_formatted} | {value}/{total}',
       format: (options: any, params: any, payload: any): string => {

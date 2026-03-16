@@ -1,19 +1,15 @@
 module.exports = {
   verbose: true,
   rootDir: './',
-  roots: ['<rootDir>/src/'],
-  preset: 'ts-jest',
+  roots: ['<rootDir>/src/', '<rootDir>/test/'],
+  transform: {
+    '^.+\\.(ts|tsx)$': ['ts-jest', { diagnostics: false, tsconfig: './tsconfig.json' }],
+  },
   moduleNameMapper: {
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
   },
-  globals: {
-    'ts-jest': {
-      diagnostics: false,
-    },
-  },
   testEnvironment: 'node',
   testRegex: '(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$',
-  setupFilesAfterEnv: ['./jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js'],
   coveragePathIgnorePatterns: ['/node_modules/', '/src/styles/', 'src/index.ts'],
   coverageThreshold: {
