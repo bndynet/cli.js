@@ -5,6 +5,10 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
 
@@ -27,5 +31,3 @@ jobs:
       run: |
         npm run build --if-present
         npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
