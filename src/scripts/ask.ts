@@ -1,24 +1,31 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Answers, Question } from 'inquirer';
+import { Separator, confirm as confirmPrompt, input as inputPrompt, rawlist, search } from '@inquirer/prompts';
+
 import { toObjectIIfJsonString } from './utils';
-
-const inquirer = require('inquirer');
-const prompt = inquirer.prompt;
-
-inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 
 enum AnswerType {
   String = 'input',
-  Number = 'number',
   Boolean = 'confirm',
-  List = 'list',
   RawList = 'rawlist',
-  Password = 'password',
-  Suggest = 'autocomplete',
+  Suggest = 'search',
 }
 
-function getQuestionObject(question: string, answerType?: AnswerType, additional?: object): Question {
+export type SupportedQuestion = string | [string, any[]];
+
+type QuestionConfig = {
+  message: string;
+  name: string;
+  options?: any[];
+  type: AnswerType;
+};
+
+type SuggestionChoice = {
+  name: string;
+  short: string;
+  value: string;
+};
+
+function getQuestionObject(question: string, answerType?: AnswerType, additional?: Partial<QuestionConfig>): QuestionConfig {
   const answerKey = question.replace(/[^\w]+/g, '-');
   return {
     name: answerKey,
@@ -28,52 +35,67 @@ function getQuestionObject(question: string, answerType?: AnswerType, additional
   };
 }
 
-function askQuestion(question: Question): Promise<any> {
-  return prompt([question]).then((res: any) => {
-    if (res && question && question.name) {
-      return res[question.name];
-    }
-  });
+async function askQuestion(question: QuestionConfig): Promise<any> {
+  switch (question.type) {
+    case AnswerType.Boolean:
+      return confirmPrompt({ message: question.message });
+    case AnswerType.RawList:
+      return rawlist({
+        message: question.message,
+        choices: (question.options || []).map((option) => {
+          if (option === '') {
+            return new Separator();
+          }
+          return option;
+        }),
+      });
+    case AnswerType.Suggest:
+      return search({
+        message: question.message,
+        source: async (input) => {
+          const searchTerm = (input || '').toLowerCase();
+          return (question.options || []).filter((item) => {
+            if (!searchTerm) {
+              return true;
+            }
+            return item.name.toLowerCase().includes(searchTerm);
+          });
+        },
+      });
+    case AnswerType.String:
+    default:
+      return inputPrompt({ message: question.message });
+  }
 }
 
-function getInputQuestionObject(question: string): Question {
+function getInputQuestionObject(question: string): QuestionConfig {
   return getQuestionObject(question);
 }
 
-function getConfirmationQuestionObject(question: string): Question {
+function getConfirmationQuestionObject(question: string): QuestionConfig {
   return getQuestionObject(question, AnswerType.Boolean);
 }
 
-function getChoicesQuestion(question: string, options: string[]): Question {
-  return getQuestionObject(question, AnswerType.RawList, {
-    choices: options.map(option => (option === '' ? new inquirer.Separator() : option)),
-  });
+function getChoicesQuestion(question: string, options: string[]): QuestionConfig {
+  return getQuestionObject(question, AnswerType.RawList, { options });
 }
 
-function getAutoCompleteQuestion(question: string, options: any[], fnGetValue?: (optionItem: any) => any): Question {
+function serializeSuggestionOption(optionItem: any, fnGetValue?: (optionItem: any) => any): SuggestionChoice {
+  const displayValue = fnGetValue ? String(fnGetValue(optionItem)) : typeof optionItem === 'string' ? optionItem : JSON.stringify(optionItem);
+
+  return {
+    name: displayValue,
+    short: displayValue,
+    value: displayValue,
+  };
+}
+
+function getAutoCompleteQuestion(question: string, options: any[], fnGetValue?: (optionItem: any) => any): QuestionConfig {
   return getQuestionObject(question.replace('::', ':'), AnswerType.Suggest, {
-    suggestOnly: true,
-    emptyText: '...',
-    searchText: 'Suggesting for you...',
-    source: (answer: Answers, input: string) => {
-      const results = options.filter(item => {
-        if (typeof item === 'string') {
-          return item.toLowerCase().includes((input || '').toLowerCase());
-        }
-        const matched = Object.keys(item).findIndex(key => (item[key] || '').toLowerCase().includes((input || '').toLowerCase())) >= 0;
-        return matched;
-      });
-
-      if (fnGetValue) {
-        return results.map(fnGetValue);
-      }
-
-      return results.map(item => (typeof item !== 'string' ? JSON.stringify(item) : item));
-    },
+    options: options.map((optionItem) => serializeSuggestionOption(optionItem, fnGetValue)),
   });
 }
 
-//====================== Exports ===================================
 export function input(question: string): Promise<string | boolean> {
   const questionObject = getInputQuestionObject(question);
   return askQuestion(questionObject);
@@ -84,13 +106,13 @@ export function confirm(question: string): Promise<boolean> {
   return askQuestion(questionObject);
 }
 
-export function select(question: string, options: string[]): Promise<number> {
+export function select(question: string, options: string[]): Promise<string> {
   const questionObject = getChoicesQuestion(question, options);
   return askQuestion(questionObject);
 }
 
-export function questions(questions: any[]): Promise<any[]> {
-  const questionObjects = questions.map((question: any) => {
+export async function questions(questionsList: SupportedQuestion[]): Promise<any[]> {
+  const questionObjects = questionsList.map((question) => {
     if (typeof question === 'string') {
       if (question.endsWith('?')) {
         return getConfirmationQuestionObject(question);
@@ -108,26 +130,19 @@ export function questions(questions: any[]): Promise<any[]> {
 
     throw new Error(`This question has not be supported yet for ${JSON.stringify(question)}`);
   });
-  return prompt(questionObjects).then((answers: any) => {
-    const result: any[] = [];
-    questionObjects.forEach((question: Question | undefined) => {
-      if (question) {
-        result.push(toObjectIIfJsonString(answers[question.name || '']));
-      } else {
-        result.push('Error');
-      }
-    });
-    return result;
-  });
+
+  const result: any[] = [];
+  for (const questionObject of questionObjects) {
+    result.push(toObjectIIfJsonString(await askQuestion(questionObject)));
+  }
+  return result;
 }
 
-export function ask(askQuestions: any[]): Promise<any[]> {
+export function ask(askQuestions: SupportedQuestion[]): Promise<any[]> {
   return questions(askQuestions);
 }
 
-export function suggest(question: string, options: any[], fnOptionValue?: (optionItem: any) => any): Promise<any> {
+export async function suggest(question: string, options: any[], fnOptionValue?: (optionItem: any) => any): Promise<any> {
   const questionObject = getAutoCompleteQuestion(question, options, fnOptionValue);
-  return askQuestion(questionObject).then((answer: string) => {
-    return toObjectIIfJsonString(answer);
-  });
+  return toObjectIIfJsonString(await askQuestion(questionObject));
 }

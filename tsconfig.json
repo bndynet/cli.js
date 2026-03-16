@@ -1,22 +1,24 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module":"es2015",
-    "target": "es2017",
-    "lib": ["es2017"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "lib": ["ES2020"],
     "strict": true,
-    "jsx": "react",
     "sourceMap": true,
     "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "listFiles": false,
+    "skipLibCheck": true,
     "declarationDir": "./dist/types",
-    "outDir": "./dist/lib",
-    "typeRoots": [
-      "./node_modules/@types",
-    ]
+    "types": ["node"]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "node"
+    }
   },
   "include": [
     "./src/**/*",
