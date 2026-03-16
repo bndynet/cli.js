@@ -26,7 +26,7 @@
     "predeploy-gh-pages": "ts-node tools/gh-pages-prepare",
     "deploy-gh-pages": "npm run predeploy-gh-pages && ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "semantic-release": "semantic-release",
+    "release": "semantic-release",
     "init": "ts-node tools/init.ts",
     "prepublishOnly": "ts-node tools/inject-copyright",
     "prepare": "husky"
@@ -94,7 +94,7 @@
     "rollup-plugin-sass": "^1.15.3",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-typescript2": "^0.36.0",
-    "semantic-release": "^25.0.3",
+    "semantic-release": "^24.2.9",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typedoc": "^0.28.17",
