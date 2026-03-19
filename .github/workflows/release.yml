@@ -5,29 +5,15 @@ on:
     types: [published]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   publish:
+    uses: bndynet/gh.flows/.github/workflows/npm-publish.yml@main
+    with:
+      node-version: '24'
+      working-directory: '.'
+      publish: true
+      auth-method: 'oidc'
+      provenance: true
+      publish-tag: latest
+      build-command: npm run build
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        registry-url: 'https://registry.npmjs.org'
-
-    - name: Install dependencies
-      run: |
-        npm ci
-
-    - name: Build & Publish
-      run: |
-        npm run build --if-present
-        npm publish --access public
