@@ -7,13 +7,15 @@ on:
 
 jobs:
   publish:
-    uses: bndynet/gh.flows/.github/workflows/npm-publish.yml@main
+    uses: bndynet/gh.flows/.github/workflows/npm.yml@main
     with:
-      node-version: '24'
-      working-directory: '.'
-      publish: true
-      auth-method: 'oidc'
-      provenance: true
-      publish-tag: latest
-      build-command: npm run build
-
+      node-version: '24'                             # default: '20'
+      working-directory: '.'                         # default: '.'
+      registry-url: 'https://registry.npmjs.org'     # default registry
+      lint-command: ''                               # default: 'npm run lint'
+      test-command: ''                               # default: 'npm test'
+      build-command: 'npm run build'                 # default: 'npm run build'
+      publish-enabled: true                          # default: false
+      publish-auth-method: 'oidc'                    # default: token (or oidc)
+      publish-tag: 'latest'                          # default: 'latest'
+      publish-provenance: true                       # default: true
